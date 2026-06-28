@@ -1,8 +1,17 @@
 import React from 'react'
+import { useRef } from 'react';
 import { gsap } from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import { useGSAP } from "@gsap/react";
+import { useMediaQuery } from 'react-responsive'
+
 const Hero = () => {
+
+    const videoRef = useRef();
+    const videoTimelineRef = useRef(); 
+    const isMobile = useMediaQuery({ maxWidth: 767 });
+
+
     useGSAP(() => {
         const heroSplit = new SplitText('.title', { type: "chars , words" });
         const paragraphSplit = new SplitText('.subtitle', { type: "lines" });
@@ -26,7 +35,7 @@ const Hero = () => {
             delay: 1,
         })
         gsap.timeline({
-            ScrollTrigger: {
+            scrollTrigger: { 
                 trigger: "#hero",
                 start: 'top top',
                 end: "bottom top",
@@ -35,33 +44,65 @@ const Hero = () => {
         }).to('.right-leaf', { y: 200 }, 0)
             .to('.left-leaf', { y: -200 }, 0)
 
+
+        const startValue = isMobile ? 'top 60%' : 'center 60%'
+        const endValue = isMobile ? 'top 60%' : 'bottom top'
+
+
+        videoTimelineRef.current = gsap.timeline({
+            scrollTrigger: {
+                trigger: 'video',
+                start: startValue,
+                end: endValue,
+                scrub: true,
+                pin: true,
+            }
+        })
+
+        videoRef.current.onloadedmetadata = () => {
+            // ---------------- FIXED: Changed 'videoTimelineRef' to 'videoTimelineRef.current' and 'video.current' to 'videoRef.current' ----------------
+            videoTimelineRef.current.to(videoRef.current, {
+                currentTime: videoRef.current.duration
+            })
+        }
+
+
     }, [])
+
+
+
     return (
-        <section id='hero' className='noisy'>
-            <h1 className='title'>MOJITO</h1>
-            <img src="/public/images/hero-left-leaf.png" alt="left-leaf" className='left-leaf' />
-            <img src="/public/images/hero-right-leaf.png" alt="right-leaf" className='right-leaf' />
+        <>
+            <section id='hero' className='noisy'>
+                <h1 className='title'>MOJITO</h1>
+                <img src="/public/images/hero-left-leaf.png" alt="left-leaf" className='left-leaf' />
+                <img src="/images/hero-right-leaf.png" alt="right-leaf" className='right-leaf' />
 
-            <div className="body">
-                <div className="content">
-                    <div className="space-y-5 hidden md:block">
-                        <p>Cool Crisp Clasiic</p>
-                        <p className="subtitle">
-                            Sip the Spirit <br />
-                            of Summer
-                        </p>
-                    </div>
+                <div className="body">
+                    <div className="content">
+                        <div className="space-y-5 hidden md:block">
+                            <p>Cool Crisp Clasiic</p>
+                            <p className="subtitle">
+                                Sip the Spirit <br />
+                                of Summer
+                            </p>
+                        </div>
 
-                    <div className="view-cocktails">
-                        <p className="subtitle">
-                            Every cocktail on our menu is a blend of premium ingredients, creative flair, and timeless recipes — designed to delight your senses.
-                        </p>
-                        <a href="#cocktails">view cocktails</a>
+                        <div className="view-cocktails">
+                            <p className="subtitle">
+                                Every cocktail on our menu is a blend of premium ingredients, creative flair, and timeless recipes — designed to delight your senses.
+                            </p>
+                            <a href="#cocktails">view cocktails</a>
 
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            <div className='video absolute inset-0'>
+                <video src="/public/videos/output.mp4" ref={videoRef} muted playsInline preload='auto'></video>
             </div>
-        </section>
+        </>
     )
 }
 
