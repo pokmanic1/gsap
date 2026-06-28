@@ -39,7 +39,7 @@ const Navbar = () => {
     return (
         <nav>
             <div>
-                <a href="#home" className='flex items-center gap-2 '>
+                <a href="#home" className='flex items-center gap-2 bg-black '>
                     <img src="../public/images/logo.png" alt="" />
                     <p>Velvet pour</p>
                 </a>

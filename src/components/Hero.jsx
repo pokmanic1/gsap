@@ -60,7 +60,6 @@ const Hero = () => {
         })
 
         videoRef.current.onloadedmetadata = () => {
-            // ---------------- FIXED: Changed 'videoTimelineRef' to 'videoTimelineRef.current' and 'video.current' to 'videoRef.current' ----------------
             videoTimelineRef.current.to(videoRef.current, {
                 currentTime: videoRef.current.duration
             })
